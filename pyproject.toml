@@ -1,0 +1,40 @@
+[project]
+name = "emergent-in-context-learning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "jax[cuda]>=0.4.35",
+
+    "dill",
+    "dm-haiku",
+
+    # jaxline
+    "absl-py",
+    "chex",
+    "ml_collections",
+    "wrapt",
+    "numpy",
+    "typing_extensions",
+    # jaxline END
+
+    "ml_collections",
+    "optax",
+    "tensorflow>=2.18.0",
+    # still need to `uv pip install --upgrade tensorflow_datasets` after this
+    # idk
+    "tensorflow_datasets>=4.9.7",
+]
+
+[tool.setuptools.packages]
+# Include packages under src
+find = { where = ["src"] }
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+#[build-system]
+#requires = ["hatchling"]
+#build-backend = "hatchling.build"

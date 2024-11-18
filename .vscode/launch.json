@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "[debug] train",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "emergent_in_context_learning.experiment.experiment",
+            "args": [
+                // `:True` for debug arg, cf ml_collections
+                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
+                "--logtostderr",
+                "--jaxline_mode", 
+                "train",
+                // if restoring
+                // "--config.restore_path",
+                // "/tmp/tk.eicl/models/latest/step_1_2024-11-18T21:05:19",
+            ],
+            // unjit for debug
+            "env": {"JAX_DISABLE_JIT": "1"}
+        },
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "${command:pickArgs}"
+            ]
+        },
+    ]
+}

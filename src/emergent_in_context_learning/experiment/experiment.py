@@ -631,9 +631,9 @@ class Experiment(experiment.AbstractExperiment):
 
 def _restore_state_to_in_memory_checkpointer(restore_path):
   """Initializes experiment state from a checkpoint."""
-
-  if not str(restore_path).endswith('checkpoint.dill'):
-    python_state_path = os.path.join(restore_path, 'checkpoint.dill')
+  python_state_path = (
+    restore_path if str(restore_path).endswith('checkpoint.dill')
+    else os.path.join(restore_path, 'checkpoint.dill'))
   with open(python_state_path, 'rb') as f:
     pretrained_state = dill.load(f)
   logging.info('Restored checkpoint from %s', python_state_path)

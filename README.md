@@ -31,16 +31,23 @@ To evaluate a trained model, override `config.restore_path` with the
 subdirectory of `config.checkpoint_dir` containing the relevant checkpoint
 (`$CKPT_DIR` below).
 
-To evaluate on in-context learning (on holdout classes):
+To evaluate 
+* in-weights learning (trained classes) use `eval_no_support_zipfian` 
+* in-context learning (holdout classes) use `eval_fewshot_holdout`
 
 ```shell
-$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_fewshot_holdout
-```
-
-To evaluate on in-weights learning (on trained classes):
-
-```shell
-$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_no_support_zipfian
+# disable GPU if needed (easier parallel run train+eval)
+CUDA_VISIBLE_DEVICES=-1 \
+JAX_PLATFORM_NAME=cpu \
+JAX_PLATFORMS=cpu \
+python -m emergent_in_context_learning.experiment.experiment \
+    --config src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py \
+    --config.restore_path /tmp/tk/models/latest/step_4770_2024-11-19T11:34:52/ \
+    --config.one_off_evaluate \
+    --jaxline_mode eval_fewshot_holdout \
+    # --jaxline_post_mortem \
+    # --jaxline_disable_pmap_jit \
+    # ^ useful debug tips
 ```
 
 <details>

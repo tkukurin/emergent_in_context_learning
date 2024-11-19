@@ -13,16 +13,42 @@ and measure (few-shot) in-context learning vs in-weights learning. See Sec 2 of
 the paper for an overview of the experimental design.
 
 
-## Installation
+## Handy commands
 
 To install the necessary requirements:
 
 ```shell
-python3 -m venv eicl_venv
-source eicl_venv/bin/activate
-pip install --upgrade pip
-pip install -r ./emergent_in_context_learning/requirements.txt
+uv venv .venv
+source .venv/bin/activate
+uv sync
+uv pip install --upgrade tensorflow_datasets
 ```
+
+To run training:
+
+```shell
+$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
+# (save checkpoints using Ctrl+C)
+```
+
+To evaluate a trained model, override `config.restore_path` with the
+subdirectory of `config.checkpoint_dir` containing the relevant checkpoint
+(`$CKPT_DIR` below).
+
+To evaluate on in-context learning (on holdout classes):
+
+```shell
+$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_fewshot_holdout
+```
+
+To evaluate on in-weights learning (on trained classes):
+
+```shell
+$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_no_support_zipfian
+```
+
+<details>
+<summary>Details</summary>
 
 ## Usage
 
@@ -75,39 +101,11 @@ See `experiment/experiment.py: _get_ds_seqs` and `datasets/data_generators.py:
 SeqGenerator` for more details on settings, which are specified in
 `config.data.seq_config`.
 
-
-### Launch commands
-
-These commands should be executed from the directory that you cloned the
-repository into.
-
-To run training:
-
-```shell
-$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
-# (save checkpoints using Ctrl+C)
-```
-
-To evaluate a trained model, override `config.restore_path` with the
-subdirectory of `config.checkpoint_dir` containing the relevant checkpoint
-(`$CKPT_DIR` below).
-
-To evaluate on in-context learning (on holdout classes):
-
-```shell
-$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_fewshot_holdout
-```
-
-To evaluate on in-weights learning (on trained classes):
-
-```shell
-$ python -m emergent_in_context_learning.experiment.experiment --config $PATH_TO_CONFIG --logtostderr --config.one_off_evaluate --config.restore_path $CKPT_DIR --jaxline_mode eval_no_support_zipfian
-```
+</details>
 
 
-## Citing this work
+## Refs
 
-If you use this work, please cite the following paper
 ```
 @misc{chan_data_2022,
   title = {Data Distributional Properties Drive Emergent In-Context Learning in Transformers},
@@ -116,31 +114,3 @@ If you use this work, please cite the following paper
   year = {2022},
 }
 ```
-
-We would also like to thank the following colleagues for their contributions to
-the implementation of the transformer model:
-Igor Babuschkin, Junyoung Chung, David Choi, Tamara Norman, Sebastian Borgeaud,
-Jack Rae, David Saxton, Yujia Li, Phil Blunsom, Maribeth Rauh, Roman Ring,
-Nate Kushman, Vinicius Zambaldi, Tom Hennigan
-
-
-## License and disclaimer
-
-Copyright 2022 DeepMind Technologies Limited
-
-All software is licensed under the Apache License, Version 2.0 (Apache 2.0);
-you may not use this file except in compliance with the Apache 2.0 license.
-You may obtain a copy of the Apache 2.0 license at:
-https://www.apache.org/licenses/LICENSE-2.0
-
-All other materials are licensed under the Creative Commons Attribution 4.0
-International License (CC-BY). You may obtain a copy of the CC-BY license at:
-https://creativecommons.org/licenses/by/4.0/legalcode
-
-Unless required by applicable law or agreed to in writing, all software and
-materials distributed here under the Apache 2.0 or CC-BY licenses are
-distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-either express or implied. See the licenses for the specific language governing
-permissions and limitations under those licenses.
-
-This is not an official Google product.

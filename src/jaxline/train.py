@@ -78,12 +78,8 @@ def train(
   is_checkpointer = config.train_checkpoint_all_hosts or is_chief
 
   rng = jax.random.PRNGKey(config.random_seed)
-
-  if config.legacy_random_seed_behavior:
-    train_step_rng = rng
-    init_rng = rng
-  else:
-    train_step_rng, init_rng = jax.random.split(rng)
+  assert not config.legacy_random_seed_behavior, "deprecated"
+  train_step_rng, init_rng = jax.random.split(rng)
 
   with utils.log_activity("experiment init"):
     experiment = _initialize_experiment(

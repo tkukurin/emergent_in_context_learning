@@ -1,16 +1,12 @@
 # Emergent In-Context Learning in Transformers
 
-This is the codebase associated with the following paper:
+`emergent_in_context_learning`:
+Based on [Data Distributional Properties Drive Emergent In-Context Learning in Transformers](https://arxiv.org/abs/2205.05055).
+Train a transformer on [Omniglot](https://github.com/brendenlake/omniglot).
+Experimental design described in Sec 2 of the paper.
 
-**Data Distributional Properties Drive Emergent In-Context Learning in
-Transformers** ([arXiv](https://arxiv.org/abs/2205.05055))<br/>
-_Stephanie C.Y. Chan, Adam Santoro, Andrew K. Lampinen, Jane X. Wang, Aaditya
-Singh, Pierre H. Richemond, Jay McClelland, Felix Hill_
-
-The experiments involve training and evaluating a transformer on sequences of
-[Omniglot](https://github.com/brendenlake/omniglot) image-label pairs, to elicit
-and measure (few-shot) in-context learning vs in-weights learning. See Sec 2 of
-the paper for an overview of the experimental design.
+`jaxline`: c/p from the `jaxline` repo which seems unmaintained.
+Minor changes.
 
 
 ## Handy commands
@@ -102,15 +98,3 @@ SeqGenerator` for more details on settings, which are specified in
 `config.data.seq_config`.
 
 </details>
-
-
-## Refs
-
-```
-@misc{chan_data_2022,
-  title = {Data Distributional Properties Drive Emergent In-Context Learning in Transformers},
-  author = {Chan, Stephanie C. Y. and Santoro, Adam and Lampinen, Andrew K. and Wang, Jane X. and Singh, Aaditya and Richemond, Pierre H. and McClelland, Jay and Hill, Felix},
-  journal = {Neural Information Processing Systems},
-  year = {2022},
-}
-```

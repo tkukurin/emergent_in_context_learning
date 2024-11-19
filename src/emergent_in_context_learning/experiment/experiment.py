@@ -632,26 +632,24 @@ class Experiment(experiment.AbstractExperiment):
 def _restore_state_to_in_memory_checkpointer(restore_path):
   """Initializes experiment state from a checkpoint."""
 
-  # Load pretrained experiment state.
-  python_state_path = os.path.join(restore_path, 'checkpoint.dill')
+  if not str(restore_path).endswith('checkpoint.dill'):
+    python_state_path = os.path.join(restore_path, 'checkpoint.dill')
   with open(python_state_path, 'rb') as f:
     pretrained_state = dill.load(f)
   logging.info('Restored checkpoint from %s', python_state_path)
 
-  # Assign state to a dummy experiment instance for the in-memory checkpointer,
-  # broadcasting to devices.
-  dummy_experiment = Experiment(
-      mode='train', init_rng=0, config=FLAGS.config.experiment_kwargs.config)
-  for attribute, key in Experiment.CHECKPOINT_ATTRS.items():
-    setattr(dummy_experiment, attribute,
-            utils.bcast_local_devices(pretrained_state[key]))
-
-  jaxline_state = dict(
-      global_step=pretrained_state['global_step'],
-      experiment_module=dummy_experiment)
+  from ml_collections import ConfigDict
+  step = pretrained_state.pop('global_step')
+  rng = utils.get_first(
+    utils.bcast_local_devices(pretrained_state.pop('train_step_rng')))
+  jaxline_state = ConfigDict(dict(
+      global_step=step,
+      train_step_rng=rng,
+      experiment_module={
+        k: utils.get_first(utils.bcast_local_devices(v))
+        for k, v in pretrained_state.items()
+      }))
   snapshot = utils.SnapshotNT(0, jaxline_state)
-
-  # Finally, seed the jaxline `utils.InMemoryCheckpointer` global dict.
   utils.GLOBAL_CHECKPOINT_DICT['latest'] = utils.CheckpointNT(
       threading.local(), [snapshot])
 
@@ -701,11 +699,16 @@ def _save_state_from_in_memory_checkpointer(
 
     pickle_nest = checkpoint.history[-1].pickle_nest
     global_step = pickle_nest['global_step']
-
-    state_dict = {'global_step': global_step}
-    for attribute, key in experiment_class.CHECKPOINT_ATTRS.items():
-      state_dict[key] = utils.get_first(
-          getattr(pickle_nest['experiment_module'], attribute))
+    rng = pickle_nest['train_step_rng']
+    module = pickle_nest['experiment_module']
+    state_dict = {
+      'global_step': global_step,
+      'train_step_rng': rng,
+    }
+    for _, key in experiment_class.CHECKPOINT_ATTRS.items():
+      state_dict[key] = jax.tree.map(
+        lambda x: x.to_dict() if hasattr(x, 'to_dict') else x, module[key]
+      )
     save_dir = os.path.join(
         save_path, checkpoint_name, _get_step_date_label(global_step))
     python_state_path = os.path.join(save_dir, 'checkpoint.dill')
@@ -714,6 +717,7 @@ def _save_state_from_in_memory_checkpointer(
       dill.dump(state_dict, f)
     logging.info(
         'Saved "%s" checkpoint to %s', checkpoint_name, python_state_path)
+    return os.path.abspath(save_dir)
 
 
 def main(argv, experiment_class):

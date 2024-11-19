@@ -17,10 +17,13 @@
                 "train",
                 // if restoring
                 // "--config.restore_path",
-                // "/tmp/tk.eicl/models/latest/step_1_2024-11-18T21:05:19",
+                // "/tmp/tk/models/latest/step_2_2024-11-19T11:07:43",
             ],
-            // unjit for debug
-            "env": {"JAX_DISABLE_JIT": "1"}
+            "env": {  // debug settings
+                "JAX_DISABLE_JIT": "1",
+                "JAX_PLATFORM_NAME": "cpu",
+                // "XLA_PYTHON_CLIENT_MEM_FRACTION": 0.2,  // apparently also a thing
+            }
         },
         {
             "name": "Python Debugger: Current File with Arguments",

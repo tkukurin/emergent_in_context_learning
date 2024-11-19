@@ -44,23 +44,14 @@ def _log_outputs(step, scalar_values):
 def _initialize_experiment(experiment_class, mode, rng, experiment_kwargs):
   """Initializes experiment catching old style init methods."""
   init_args = inspect.signature(experiment_class).parameters
-  if "init_rng" in init_args:
-    experiment = experiment_class(
-        mode, init_rng=rng, **experiment_kwargs)
-  else:
-    # TODO(b/205109371): Make init_rng non-optional.
-    logging.warning(
-        "You should add init_rng to your Experiment"
-        " constructor, which we will use to pass you"
-        " jaxline.base_config.random_seed. Please deprecate any use of"
-        " experiment_kwargs.config.random_seed: model initialization should"
-        " be performed with init_rng and any sweeps directly with"
-        " jaxline.base_config.random_seed. The use of"
-        " experiment_kwargs.config.random_seed was flawed design introduced"
-        " by some of our JAXline examples and meant that the rng used for"
-        " initialization (and sweeps) was decoupled from that used by the"
-        " step function. This will soon become unsupported behaviour.")
-    experiment = experiment_class(mode, **experiment_kwargs)
+  # Model init should be via init_rng.
+  # sweeps directly with jaxline.base_config.random_seed. 
+  # experiment_kwargs.config.random_seed was flawed design introduced
+  # by some JAXline examples and meant that the rng used for init+sweeps 
+  # was decoupled from that used by the step fn.
+  assert "init_rng" in init_args, "deprecated"
+  experiment = experiment_class(
+      mode, init_rng=rng, **experiment_kwargs)
   return experiment
 
 

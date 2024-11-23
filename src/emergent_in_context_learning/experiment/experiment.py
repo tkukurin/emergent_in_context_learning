@@ -740,7 +740,6 @@ def main(argv, experiment_class):
     platform.main(experiment_class, argv)
   finally:
     save_model_fn()  # Save at the end of training or in case of exception.
-  platform.main(experiment_class, argv)
 
 
 if __name__ == '__main__':

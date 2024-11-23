@@ -30,7 +30,7 @@ def get_config(debug=False):
     return debug_value if debug else default_value
 
   config = base_config.get_base_config()
-  from emergent_in_context_learning.experiment.experiment import Experiment
+  from eicl.experiment.experiment import Experiment
   config.experiment_class = Experiment
 
   # Experiment config.

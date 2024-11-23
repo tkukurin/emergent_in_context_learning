@@ -21,7 +21,7 @@ import haiku as hk
 from haiku import initializers as init
 import jax.numpy as jnp
 
-from emergent_in_context_learning.modules import resnet
+from eicl.modules import resnet
 
 
 def _create_positional_encodings(inputs, max_time=30.0):
@@ -166,14 +166,12 @@ class InputEmbedder(hk.Module):
       hh = hh.at[:, 1::2].set(h_label[:, :-1])
       # hh is (B,S,E) where S=SS*2-1
 
-    # Create positional encodings.
     if self._use_positional_encodings:
       positional_encodings = _create_positional_encodings(hh)
       if is_training:
         positional_encodings = hk.dropout(hk.next_rng_key(),
                                           self._positional_dropout_prob,
                                           positional_encodings)
-      # Add on the positional encoding.
       hh += positional_encodings
 
     return hh

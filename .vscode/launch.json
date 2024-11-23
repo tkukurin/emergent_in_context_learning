@@ -6,10 +6,10 @@
             "name": "[debug] train",
             "type": "debugpy",
             "request": "launch",
-            "module": "emergent_in_context_learning",
+            "module": "eicl",
             "args": [
                 // `:1` for debug arg, cf ml_collections
-                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:1",
+                "--config", "src/eicl/experiment/configs/resnet.py:1",
                 "--logtostderr",
                 "--jaxline_mode", 
                 "train",
@@ -32,9 +32,9 @@
             "name": "[run] eval",
             "type": "debugpy",
             "request": "launch",
-            "module": "emergent_in_context_learning",
+            "module": "eicl",
             "args": [
-                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
+                "--config", "src/eicl/experiment/configs/images_all_exemplars.py:True",
                 "--logtostderr",
                 "--jaxline_mode", "eval_fewshot_holdout",
                 "--config.one_off_evaluate",

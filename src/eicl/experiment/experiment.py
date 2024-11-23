@@ -30,12 +30,12 @@ import optax
 import tensorflow.compat.v2 as tf
 import tensorflow_datasets as tfds
 
-from emergent_in_context_learning.datasets import data_generators
-from emergent_in_context_learning.datasets import utils as dataset_utils
-from emergent_in_context_learning.modules import losses
-from emergent_in_context_learning.modules.embedding import InputEmbedder
-from emergent_in_context_learning.modules.rnn import RNN
-from emergent_in_context_learning.modules.transformer import Transformer
+from eicl.datasets import data_generators
+from eicl.datasets import utils as dataset_utils
+from eicl.modules import losses
+from eicl.modules.embedding import InputEmbedder
+from eicl.modules.rnn import RNN
+from eicl.modules.transformer import Transformer
 
 
 class Experiment(experiment.AbstractExperiment):

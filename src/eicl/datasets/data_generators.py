@@ -28,7 +28,15 @@ N_EXEMPLARS_PER_CLASS = 20
 
 
 class OmniglotDatasetForSampling:
-  """Class for loading Omniglot dataset, used downstream for sampling sequences."""
+  """Class for loading Omniglot dataset, used downstream for sampling sequences.
+
+  * 1623 different character classes from international alphabets
+  * 20 handwritten examples for each class
+
+  In this sampler
+  * first 16 seq elements comprise context (8 img-label pairs)
+  * last token is a "query" token (img)
+  """
 
   def __init__(self, omniglot_split, exemplars='single', augment_images=False,
                n_to_keep=None):

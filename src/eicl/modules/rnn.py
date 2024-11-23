@@ -13,44 +13,44 @@
 # limitations under the License.
 # ==============================================================================
 
-"""Transformer module."""
+"""RNN module."""
 
 import haiku as hk
 
-from emergent_in_context_learning.modules import transformer_core
+from eicl.modules import transformer_core
 
 
-class Transformer(hk.Module):
-  """Transformer tower."""
+class RNN(hk.Module):
+  """RNN tower."""
 
   def __init__(self,
                input_embedder,
+               model_type='lstm',
                num_classes=1623,
                num_layers=8,
-               num_heads=8,
+               hidden_size=512,
                dropout_prob=0.1,
-               self_att_init_scale=1.0,
                dense_init_scale=1.0,
                name=None):
-    """Initialize the Transformer tower.
+    """Initialize the RNN tower.
 
     Args:
       input_embedder: InputEmbedder object.
+      model_type: 'vanilla_rnn' or 'lstm'
       num_classes: Total number of output classes.
-      num_layers: Number of transformer blocks.
-      num_heads: Number of transformer heads.
+      num_layers: Number of RNN layers
+      hidden_size: Size of RNN hidden layer.
       dropout_prob: Dropout probability.
-      self_att_init_scale: Scale for self-attention initialization.
       dense_init_scale: Scale for dense layer initialization.
       name: Optional name for the module.
     """
-    super(Transformer, self).__init__(name=name)
+    super(RNN, self).__init__(name=name)
     self._input_embedder = input_embedder
+    self._model_type = model_type
     self._num_classes = num_classes
     self._num_layers = num_layers
-    self._num_heads = num_heads
+    self._hidden_size = hidden_size
     self._dropout_prob = dropout_prob
-    self._self_att_init_scale = self_att_init_scale
     self._dense_init_scale = dense_init_scale
 
   def __call__(self, examples, labels, mask=None, is_training=True):
@@ -71,23 +71,20 @@ class Transformer(hk.Module):
     hh = self._input_embedder(examples, labels, is_training)
 
     if mask is not None:
-      attention_mask = mask[:, None, None, :]
-    else:
-      attention_mask = None
+      raise NotImplementedError  # not implemented properly below
+      # see gelato.x.models.transformer.TransformerBlock
 
-    for _ in range(self._num_layers):
-      if mask is not None:
-        hh *= mask[:, :, None]
-      hh = transformer_core.TransformerBlock(
-          causal=True,
-          widening_factor=4,
-          num_heads=self._num_heads,
-          self_att_init_scale=self._self_att_init_scale,
-          dense_init_scale=self._dense_init_scale,
-          dropout_prob=self._dropout_prob)(
-              hh, mask=attention_mask, is_training=is_training)
-    hh = transformer_core.layer_norm(hh)
-    if mask is not None:
-      hh *= mask[:, :, None]  # (B,S,E)
+    if self._model_type == 'vanilla_rnn':
+      rnn_module = hk.VanillaRNN
+    elif self._model_type == 'lstm':
+      rnn_module = hk.LSTM
+    else:
+      raise ValueError('Invalid self._model_type: %s' % self._model_type)
+
+    rnn_stack = [rnn_module(self._hidden_size) for _ in range(self._num_layers)]
+    rnn_stack = hk.DeepRNN(rnn_stack)
+    state = rnn_stack.initial_state(batch_size=hh.shape[0])
+    hh, _ = hk.static_unroll(rnn_stack, hh, state, time_major=False)  # (B,S,E)
+
     return transformer_core.conv1(
         hh, self._num_classes, init_scale=self._dense_init_scale)

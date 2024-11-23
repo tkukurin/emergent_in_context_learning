@@ -5,9 +5,8 @@ import importlib
 importlib.reload(tk)
 print(tk.envsetup())
 # %%
-from emergent_in_context_learning.datasets import data_generators as dglib
+from eicl.datasets import data_generators as dglib
 dsomni = dglib.OmniglotDatasetForSampling('train')
-
 # %%
 import matplotlib.pyplot as plt
 plt.imshow(dsomni.data[0])

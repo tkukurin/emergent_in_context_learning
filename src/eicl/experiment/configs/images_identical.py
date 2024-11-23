@@ -30,7 +30,7 @@ def get_config(debug=False):
     return debug_value if debug else default_value
 
   config = base_config.get_base_config()
-  from emergent_in_context_learning.experiment.experiment import Experiment
+  from eicl.experiment.experiment import Experiment
   config.experiment_class = Experiment
 
   # Experiment config.
@@ -51,7 +51,7 @@ def get_config(debug=False):
                   ),
                   omniglot_config=dict(
                       omniglot_split='all',  # 1623 total classes
-                      exemplars='all',  # 'single' / 'separated' / 'all'
+                      exemplars='single',  # 'single' / 'separated' / 'all'
                       augment_images=False,  # multiply total classes x 8
                   ),
                   symbolic_config=dict(dataset_size=1000,),
@@ -118,7 +118,7 @@ def get_config(debug=False):
   config.log_tensors_interval = 60
   config.save_checkpoint_interval = 300
   config.train_checkpoint_all_hosts = False
-  config.checkpoint_dir = '/tmp/tk/'
+  config.checkpoint_dir = '/tmp/jaxline/transformer_omniglot/'
   config.eval_specific_checkpoint_dir = ''
   config.restore_path = ''
 

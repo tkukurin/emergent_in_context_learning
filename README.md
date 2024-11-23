@@ -1,6 +1,6 @@
 # Emergent In-Context Learning in Transformers
 
-`emergent_in_context_learning`:
+`eicl`:
 Based on [Data Distributional Properties Drive Emergent In-Context Learning in Transformers](https://arxiv.org/abs/2205.05055).
 Train a transformer on [Omniglot](https://github.com/brendenlake/omniglot).
 Experimental design described in Sec 2 of the paper.
@@ -23,7 +23,7 @@ uv pip install --upgrade tensorflow_datasets
 To run training:
 
 ```shell
-$ python -m emergent_in_context_learning --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
+$ python -m eicl --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
 # (save checkpoints using Ctrl+C)
 ```
 
@@ -40,8 +40,8 @@ To evaluate
 CUDA_VISIBLE_DEVICES=-1 \
 JAX_PLATFORM_NAME=cpu \
 JAX_PLATFORMS=cpu \
-python -m emergent_in_context_learning \
-    --config src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py \
+python -m eicl \
+    --config src/eicl/experiment/configs/images_all_exemplars.py \
     --config.restore_path /tmp/tk/models/latest/step_4770_2024-11-19T11:34:52/ \
     --config.one_off_evaluate \
     --jaxline_mode eval_fewshot_holdout \

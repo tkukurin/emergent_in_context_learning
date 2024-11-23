@@ -23,7 +23,7 @@ uv pip install --upgrade tensorflow_datasets
 To run training:
 
 ```shell
-$ python -m emergent_in_context_learning.experiment --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
+$ python -m emergent_in_context_learning --config $PATH_TO_CONFIG --jaxline_mode train --logtostderr
 # (save checkpoints using Ctrl+C)
 ```
 
@@ -40,7 +40,7 @@ To evaluate
 CUDA_VISIBLE_DEVICES=-1 \
 JAX_PLATFORM_NAME=cpu \
 JAX_PLATFORMS=cpu \
-python -m emergent_in_context_learning.experiment \
+python -m emergent_in_context_learning \
     --config src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py \
     --config.restore_path /tmp/tk/models/latest/step_4770_2024-11-19T11:34:52/ \
     --config.one_off_evaluate \

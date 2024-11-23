@@ -1,13 +1,16 @@
 """Generic env stuff."""
 import os
 import subprocess
+import jax
 
 
 def envsetup(nogpu: bool = True, nojit: bool = False):
     """get gpu info, possibly disable gpu in notebook."""
     if nogpu:
+        jax.config.update('jax_platform_name', 'cpu')
         os.environ |= ({
             "JAX_PLATFORM_NAME": "cpu",
+            # not sure if this works??
             "JAX_PLATFORMS": "cpu",
             "CUDA_VISIBLE_DEVICES": "-1",
         })
@@ -33,4 +36,17 @@ def envsetup(nogpu: bool = True, nojit: bool = False):
             })
     except Exception as e:
         print(f"ERR getting GPU info: {e}")
-    return gpu_info
+    return {
+        'gpu': gpu_info,
+        'env': {
+            k: os.environ.get(k) for k in (
+                "JAX_PLATFORM_NAME",
+                "JAX_PLATFORMS",
+                "CUDA_VISIBLE_DEVICES",
+                "JAX_DISABLE_JIT",
+            )
+        },
+        'jax': {
+            'devices': jax.devices()
+        }
+    }

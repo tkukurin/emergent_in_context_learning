@@ -16,8 +16,6 @@ from jaxline import experiment
 from jaxline import platform
 from jaxline import utils
 
-from .experiment import Experiment
-
 FLAGS = flags.FLAGS
 
 
@@ -113,7 +111,9 @@ def _save_state_from_in_memory_checkpointer(
 
 
 
-def main(argv, experiment_class):
+def main(argv):
+  logging.info(f'{(experiment_class := FLAGS.config.experiment_class)=}')
+  
   if restore_path := FLAGS.config.restore_path:
     _restore_state_to_in_memory_checkpointer(restore_path)
 
@@ -133,4 +133,4 @@ def main(argv, experiment_class):
 
 if __name__ == '__main__':
   flags.mark_flag_as_required('config')
-  app.run(lambda argv: main(argv, Experiment))
+  app.run(lambda argv: main(argv))

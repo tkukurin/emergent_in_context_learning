@@ -1,17 +1,15 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "[debug] train",
             "type": "debugpy",
             "request": "launch",
-            "module": "emergent_in_context_learning.experiment",
+            "module": "emergent_in_context_learning",
             "args": [
-                // `:True` for debug arg, cf ml_collections
-                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
+                // `:1` for debug arg, cf ml_collections
+                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:1",
                 "--logtostderr",
                 "--jaxline_mode", 
                 "train",
@@ -21,7 +19,6 @@
             ],
             "env": {  // debug settings
                 "JAX_DISABLE_JIT": "1",
-                "JAX_PLATFORM_NAME": "cpu",
                 // "XLA_PYTHON_CLIENT_MEM_FRACTION": 0.2,  // apparently also a thing
             },
             // I asked GPT what to add
@@ -35,7 +32,7 @@
             "name": "[run] eval",
             "type": "debugpy",
             "request": "launch",
-            "module": "emergent_in_context_learning.experiment",
+            "module": "emergent_in_context_learning",
             "args": [
                 "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
                 "--logtostderr",

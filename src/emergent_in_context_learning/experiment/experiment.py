@@ -195,10 +195,9 @@ class Experiment(experiment.AbstractExperiment):
     interim_mask = jnp.full_like(losses_all, False).at[:, :-1:2].set(True)
     query_mask = jnp.full_like(losses_all, False).at[:, -1].set(True)
 
-    # Compute weighted loss mask.
-    if w_interim:
-      # Loss weighting on both interim and query predictions.
+    if w_interim:  # interim = compute loss over non-query sequence elements
       # e.g. a seq with 2 support examples: weights are [w/2, 0, w/2, 0, (1-w)]
+      # (NB, every 2nd example is an image: [image, label, image, label, query])
       if self.embed_config.concatenate_labels:
         raise NotImplementedError  # below assumes interleaved examples & labels
       loss_weightings = jnp.full_like(losses_all, 0.)

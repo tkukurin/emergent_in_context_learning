@@ -30,6 +30,8 @@ def get_config(debug=False):
     return debug_value if debug else default_value
 
   config = base_config.get_base_config()
+  from emergent_in_context_learning.experiment.experiment import Experiment
+  config.experiment_class = Experiment
 
   # Experiment config.
   config.experiment_kwargs = config_dict.ConfigDict(
@@ -110,10 +112,11 @@ def get_config(debug=False):
           ),))
 
   # Training loop config.
+  config.experiment_class = Experiment
   config.training_steps = int(5e5)
-  config.log_train_data_interval = 60
-  config.log_tensors_interval = 60
-  config.save_checkpoint_interval = 300
+  config.log_train_data_interval = 20
+  config.log_tensors_interval = 20
+  config.save_checkpoint_interval = 50
   config.train_checkpoint_all_hosts = False
   config.checkpoint_dir = '/tmp/jaxline/transformer_omniglot/'
   config.eval_specific_checkpoint_dir = ''

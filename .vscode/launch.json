@@ -8,7 +8,7 @@
             "name": "[debug] train",
             "type": "debugpy",
             "request": "launch",
-            "module": "emergent_in_context_learning.experiment.experiment",
+            "module": "emergent_in_context_learning.experiment",
             "args": [
                 // `:True` for debug arg, cf ml_collections
                 "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
@@ -23,6 +23,32 @@
                 "JAX_DISABLE_JIT": "1",
                 "JAX_PLATFORM_NAME": "cpu",
                 // "XLA_PYTHON_CLIENT_MEM_FRACTION": 0.2,  // apparently also a thing
+            },
+            // I asked GPT what to add
+            "cwd": "${workspaceFolder}", // Set working directory
+            "justMyCode": false, // Allow debugging into third-party libraries
+            "stopOnEntry": false, // Don't stop at the start of the program
+            "subProcess": true, // Debug subprocesses (important for DDP or multithreading)
+            "redirectOutput": true, // Capture stdout/stderr in the Debug Console
+        },
+        {
+            "name": "[run] eval",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "emergent_in_context_learning.experiment",
+            "args": [
+                "--config", "src/emergent_in_context_learning/experiment/configs/images_all_exemplars.py:True",
+                "--logtostderr",
+                "--jaxline_mode", "eval_fewshot_holdout",
+                "--config.one_off_evaluate",
+                "--config.restore_path",
+                "/tmp/tk/models/latest/step_4770_2024-11-19T11:34:52/",
+            ],
+            "env": {
+                "JAX_DISABLE_JIT": "0",
+                "JAX_PLATFORM_NAME": "cpu",
+                "JAX_PLATFORMS": "cpu",
+                "CUDA_VISIBLE_DEVICES": "-1",
             }
         },
         {

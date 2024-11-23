@@ -27,6 +27,12 @@ dependencies = [
     "tensorflow_datasets>=4.9.7",
 ]
 
+[project.optional-dependencies]
+nb = [
+    "ipykernel>=6.29.5",
+    "matplotlib>=3.9.2",
+]
+
 [tool.setuptools.packages]
 # Include packages under src
 find = { where = ["src"] }

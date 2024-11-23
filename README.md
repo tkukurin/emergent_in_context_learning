@@ -16,8 +16,7 @@ To install the necessary requirements:
 ```shell
 uv venv .venv
 source .venv/bin/activate
-uv sync
-uv pip install --upgrade tensorflow_datasets
+uv sync --all-extras
 ```
 
 To run training:

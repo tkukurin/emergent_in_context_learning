@@ -6,10 +6,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "jax[cuda]>=0.4.35",
-
     "dill",
     "dm-haiku",
-
     # jaxline
     "absl-py",
     "chex",
@@ -18,13 +16,17 @@ dependencies = [
     "numpy",
     "typing_extensions",
     # jaxline END
-
     "ml_collections",
     "optax",
     "tensorflow>=2.18.0",
-    # still need to `uv pip install --upgrade tensorflow_datasets` after this
-    # idk
+    # https://github.com/tensorflow/datasets/issues/4858#issuecomment-1554705743
+    # tf metadata hax for protobuf error:
+    #  1. Downgrade the protobuf package to 3.20.x or lower.
+    #  2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).
+    "tensorflow-metadata==1.13.0",
     "tensorflow_datasets>=4.9.7",
+    # idk something with haiku.experimental fails w/out this
+    "flax>=0.10.2",
 ]
 
 [project.optional-dependencies]
